@@ -229,6 +229,7 @@ ngx_stream_server_traffic_status_node_init(ngx_stream_session_t *s,
 
     /* set serverZone */
     stsn->stat_connect_counter = 1;
+    stsn->stat_active_counter = 1;
     stsn->stat_in_bytes = (ngx_atomic_uint_t) s->received;
     stsn->stat_out_bytes = (ngx_atomic_uint_t) s->connection->sent;
 

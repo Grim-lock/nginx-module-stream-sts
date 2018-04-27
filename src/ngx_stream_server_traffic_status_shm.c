@@ -71,11 +71,17 @@ ngx_stream_server_traffic_status_shm_add_node(ngx_stream_session_t *s,
         stsn->stat_upstream.type = type;
         ngx_memcpy(stsn->data, key->data, key->len);
 
+        s->connection->server_active_count = &stsn->stat_active_counter;
+
         ngx_rbtree_insert(ctx->rbtree, node);
 
     } else {
         init = NGX_STREAM_SERVER_TRAFFIC_STATUS_NODE_FIND;
         stsn = (ngx_stream_server_traffic_status_node_t *) &node->color;
+        if (s->connection->server_active_count == NULL) {
+            (void) ngx_atomic_fetch_add(&stsn->stat_active_counter, 1);
+            s->connection->server_active_count = &stsn->stat_active_counter;
+        }
         ngx_stream_server_traffic_status_node_set(s, stsn);
     }
 
